@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link rel="stylesheet" type="text/css" href="/styles/chat.css">
+</head>
+<body>
+    <!-- Display username in the top left corner -->
+    <div class="username-display" id="usernameDisplay">Welcome, <%= username %>!</div>
+
+    <div class="chat-container">
+        <header>
+            <button onclick="window.location.href='/view_groups'">View Groups</button>
+            <button onclick="window.location.href='/create_group'">Create Group</button>
+        </header>
+        <div class="user-search">
+            <input type="text" id="search" placeholder="Search users..." onkeyup="searchUsers()"/>
+            <div id="search-results"></div>
+        </div>
+        <div id="chat-box" class="chat-box"></div>
+        <div class="message-input">
+            <input type="text" id="recipient" placeholder="Recipient Username" required/>
+            <input type="text" id="message" placeholder="Type a message..." required/>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <p id="message-status" style="color: red; display: none;"></p>
+    </div>
+
+    <div class="block-unblock-container">
+        <div class="block-section">
+            <input type="text" id="block-username" placeholder="Username to block">
+            <button onclick="blockUser()">Block User</button>
+            <p id="block-status" style="color: red;"></p>
+        </div>
+
+        <div class="unblock-section">
+            <input type="text" id="unblock-username" placeholder="Username to unblock">
+            <button onclick="unblockUser()">Unblock User</button>
+            <p id="unblock-status" style="color: green;"></p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const username = "<%= username %>"; // Replace with how you pass the username from server
+        socket.emit('setUsername', username);
+
+        socket.on('message', (data) => {
+            if (data.username !== username) { // Check to avoid showing user's own messages
+                const chatBox = document.getElementById('chat-box');
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${data.username}: ${data.message}`;
+                chatBox.appendChild(messageElement);
+            }
+        });
+
+        socket.on('groupMessage', (data) => {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `[${data.username}]: ${data.message}`;
+            chatBox.appendChild(messageElement);
+        });
+
+        socket.on('messageStatus', (status) => {
+            const statusElement = document.getElementById('message-status');
+            statusElement.style.display = 'block';
+            statusElement.textContent = status.message;
+            statusElement.style.color = status.success ? 'green' : 'red';
+        });
+
+        function sendMessage() {
+            const recipient = document.getElementById('recipient').value;
+            const message = document.getElementById('message').value;
+            fetch('/private_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ recipient, message })
+            })
+            .then(response => response.json())
+            .then(result => {
+                const messageStatus = document.getElementById('message-status');
+                messageStatus.style.display = 'block';
+                messageStatus.textContent = result.message;
+                messageStatus.style.color = result.success ? 'green' : 'red';
+
+                if (result.success) {
+                    const chatBox = document.getElementById('chat-box');
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = `You: ${message}`;
+                    chatBox.appendChild(messageElement);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+            });
+            document.getElementById('message').value = '';
+        }
+
+        // Update username display
+        document.getElementById('usernameDisplay').innerText = `Welcome, ${username}!`;
+
+        // Search users function
+        function searchUsers() {
+            const query = document.getElementById('search').value;
+            if (query.length > 0) {
+                fetch(`/search_users?q=${query}`)
+                    .then(response => response.json())
+                    .then(users => {
+                        const searchResults = document.getElementById('search-results');
+                        searchResults.innerHTML = '';
+                        users.forEach(user => {
+                            const userElement = document.createElement('div');
+                            userElement.textContent = user.username;
+                            userElement.onclick = () => {
+                                document.getElementById('recipient').value = user.username;
+                            };
+                            searchResults.appendChild(userElement);
+                        });
+                    });
+            } else {
+                document.getElementById('search-results').innerHTML = '';
+            }
+        }
+
+        // Block user function
+        function blockUser() {
+            const blockUsername = document.getElementById('block-username').value;
+            fetch('/block_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: blockUsername })
+            })
+            .then(response => response.json())
+            .then(result => {
+                const blockStatus = document.getElementById('block-status');
+                blockStatus.textContent = result.message;
+                blockStatus.style.color = result.success ? 'green' : 'red';
+            })
+            .catch(error => {
+                console.error('Error blocking user:', error);
+            });
+        }
+
+        // Unblock user function
+        function unblockUser() {
+            const unblockUsername = document.getElementById('unblock-username').value;
+            fetch('/unblock_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: unblockUsername })
+            })
+            .then(response => response.json())
+            .then(result => {
+                const unblockStatus = document.getElementById('unblock-status');
+                unblockStatus.textContent = result.message;
+                unblockStatus.style.color = result.success ? 'green' : 'red';
+            })
+            .catch(error => {
+                console.error('Error unblocking user:', error);
+            });
+        }
+    </script>
+</body>
+</html>

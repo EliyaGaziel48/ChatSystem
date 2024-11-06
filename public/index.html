@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration and Login Form</title>
+    <link rel="stylesheet" type="text/css" href="styles/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="form-container">
+                <h2>Registration Form</h2>
+                <form action="/sign_up" method="POST">
+                    <input type="text" class="box" id="username" name="username" placeholder="Username" required/>
+                    <br>
+                    <input type="text" class="box" id="email" name="email" placeholder="Email" required/>
+                    <br>
+                    <input type="password" class="box" id="password" name="password" placeholder="Password" required/>
+                    <br>
+                    <input type="submit" value="Submit" id="submit"/>
+                </form>
+                <p id="signup-error" style="color: red; display: none;">Username or Email already exists. Please try again.</p>
+            </div>
+        </div>
+
+        <hr class="separator">
+
+        <div class="row">
+            <div class="form-container">
+                <h2>Login Form</h2>
+                <form action="/login" method="POST">
+                    <input type="text" class="box" id="login_username" name="username" placeholder="Username" required/>
+                    <br>
+                    <input type="password" class="box" id="login_password" name="password" placeholder="Password" required/>
+                    <br>
+                    <input type="submit" value="Login" id="login"/>
+                </form>
+                <p id="login-error" style="color: red; display: none;">Incorrect username or password. Please try again.</p>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('signup') === 'failed') {
+            document.getElementById('signup-error').style.display = 'block';
+        }
+        if (urlParams.get('login') === 'failed') {
+            document.getElementById('login-error').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

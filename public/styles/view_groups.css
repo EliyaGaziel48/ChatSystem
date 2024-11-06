@@ -1,0 +1,103 @@
+/* view_groups.css */
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+#groupList {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#groupList li {
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#groupList li:last-child {
+    border-bottom: none;
+}
+
+#groupList li:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+#groupChat {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#messages {
+    border: 1px solid #ddd;
+    padding: 10px;
+    height: 200px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+#messageForm {
+    display: flex;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+#messageInput:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#messageForm button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#messageForm button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Groups</title>
+    <link rel="stylesheet" href="/styles/view_groups.css">
+</head>
+<body>
+    <h1>My Groups</h1>
+
+    <ul id="groupList">
+        <% groups.forEach(group => { %>
+            <li onclick="selectGroup('<%= group._id %>')"><%= group.name %></li>
+        <% }); %>
+    </ul>
+
+    <div id="groupChat" style="display: none;">
+        <h2 id="groupName"></h2>
+        <div id="messages"></div>
+        <form id="messageForm" onsubmit="sendMessage(event)">
+            <input id="messageInput" type="text" placeholder="Type a message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        let selectedGroupId;
+
+        function selectGroup(groupId) {
+            selectedGroupId = groupId;
+            document.getElementById('groupChat').style.display = 'block';
+
+            fetch(`/group_messages/${groupId}`)
+                .then(response => response.json())
+                .then(messages => {
+                    const messagesDiv = document.getElementById('messages');
+                    messagesDiv.innerHTML = '';
+                    messages.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.textContent = `${message.sender}: ${message.message}`;
+                        messagesDiv.appendChild(messageDiv);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching group messages:", err);
+                });
+
+            const groupName = document.querySelector(`#groupList li[onclick="selectGroup('${groupId}')"]`).textContent;
+            document.getElementById('groupName').textContent = groupName;
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            messageInput.value = '';
+
+            fetch('/group_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ groupId: selectedGroupId, message })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Message sent successfully") {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.textContent = `You: ${message}`;
+                        document.getElementById('messages').appendChild(messageDiv);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error sending message:", err);
+                });
+        }
+    </script>
+</body>
+</html>
