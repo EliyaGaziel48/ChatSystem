@@ -11,10 +11,11 @@
     <div class="username-display" id="usernameDisplay">Welcome, <%= username %>!</div>
 
     <div class="chat-container">
+        
         <header>
             <button onclick="window.location.href='/view_groups'">View Groups</button>
-            <button onclick="window.location.href='/create_group'">Create Group</button>
         </header>
+
         <div class="user-search">
             <input type="text" id="search" placeholder="Search users..." onkeyup="searchUsers()"/>
             <div id="search-results"></div>

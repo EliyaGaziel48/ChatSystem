@@ -101,3 +101,19 @@ h1 {
     background-color: #218838;
     transform: scale(1.05);
 }
+header button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-left: 120px;
+    width: 40%;
+}
+button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}

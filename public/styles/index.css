@@ -7,11 +7,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 105vh;
     color: #333;
 }
 
 .container {
+    margin-top: 5px;
     text-align: center;
     width: 100%;
     max-width: 500px;
@@ -22,8 +23,8 @@ body {
 }
 
 h1 {
-    margin-bottom: 20px;
-    font-size: 28px;
+    margin-bottom: 0px;
+    font-size: 25px;
     color: #007bff;
 }
 
@@ -71,6 +72,7 @@ button:hover {
 }
 
 .form-container {
+    margin-top: 5px;
     border: 2px solid #ddd;
     padding: 30px;
     margin: 20px auto;
@@ -132,4 +134,10 @@ button:hover {
 .separator {
     border-top: 1px solid #ddd;
     margin: 20px 0;
+}
+
+header h1{
+    color:rgb(0, 0, 255);
+    border-style: double;
+    border-color: goldenrod;
 }
